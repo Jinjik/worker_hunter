@@ -15,9 +15,12 @@ class Parser:
         request = session.get(url=self.base_url, headers=self.headers)
 
         try:
-            soup = bs(request.content, 'lxml')
+            soup = bs(request.content, 'html.parser')
             pagination = soup.find_all('a', attrs={'data-qa': 'pager-page'})
-            count = int(pagination[-1].text)
+            if pagination:
+                count = int(pagination[-1].text)
+            else:
+                count = 0
             for i in range(count):
                 url = f'https://tomsk.hh.ru/search/vacancy?L_is_autosearch=false&area=90&clusters=true&enable_snippets=true&text=Python&page={i}'
                 if url not in self.urls:
@@ -29,7 +32,7 @@ class Parser:
         for url in self.urls:
             session = requests.Session()
             request = session.get(url=url, headers=self.headers)
-            soup = bs(request.content, 'lxml')
+            soup = bs(request.content, 'html.parser')
             divs = soup.find_all('div', attrs={'data-qa': 'vacancy-serp__vacancy'})
 
             for div in divs:
@@ -39,7 +42,7 @@ class Parser:
                     company = div.find('a', attrs={'data-qa': 'vacancy-serp__vacancy-employer'}).text
                     text1 = div.find('div', attrs={'data-qa': 'vacancy-serp__vacancy_snippet_responsibility'}).text
                     text2 = div.find('div', attrs={'data-qa': 'vacancy-serp__vacancy_snippet_requirement'}).text
-                    context = f'{text1} {text2}
+                    context = f'{text1} {text2}'
                 except AttributeError as exc:
                     print(exc)
                 else:
