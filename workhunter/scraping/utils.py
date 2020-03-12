@@ -58,28 +58,3 @@ class Parser:
                     })
 
         return self.jobs
-
-
-def main():
-
-    headers = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-        'accept': '*/*',
-    }
-    base_url = 'https://hh.ru/search/vacancy?L_is_autosearch=false&area=113&clusters=true&enable_snippets=true&text=Python&page=0'
-
-    parser = Parser(headers, base_url)
-    parser.get_urls()
-    jobs = parser.parse()
-
-    for job in jobs:
-        print(job['title'])
-        print(job['link'])
-        print(job['company'].strip(' '))
-        print(job['city'])
-        print(job['context'])
-        print('-----------------\n')
-
-
-if __name__ == '__main__':
-    main()
