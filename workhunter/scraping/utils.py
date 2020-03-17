@@ -4,16 +4,15 @@ from bs4 import BeautifulSoup as bs
 
 class Parser:
 
-    def __init__(self, headers, base_url):
+    def __init__(self, headers):
         self.headers = headers
-        self.base_url = base_url
         self.urls = []
         self.jobs = []
 
-    def get_urls(self):
-        self.urls.append(self.base_url)
+    def get_urls(self, base_url):
+        self.urls.append(base_url)
         session = requests.Session()
-        request = session.get(url=self.base_url, headers=self.headers)
+        request = session.get(url=base_url, headers=self.headers)
         count = 0
 
         try:

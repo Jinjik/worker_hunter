@@ -5,7 +5,7 @@
   <div id="main">
     {% for job in jobs %}
       <h4><a href="{{ job.link }}">{{ job.title }}</a></h4>
-      <p>{{ job.description }}</p><br/>
+      <p>{{ job.context }}</p><br/>
       <p>{{ job.company }}</p>
       <hr><br/>
     {% endfor %}
