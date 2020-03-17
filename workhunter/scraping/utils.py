@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as bs
 
 
 class Parser:
+
     def __init__(self, headers, base_url):
         self.headers = headers
         self.base_url = base_url
@@ -23,7 +24,8 @@ class Parser:
                 count = int(pagination[-1].text)
 
             for i in range(count):
-                url = f'https://hh.ru/search/vacancy?L_is_autosearch=false&area=113&clusters=true&enable_snippets=true&text=Python&page={i}'
+                url = f'https://hh.ru/search/vacancy?L_is_autosearch=false&area=113&' \
+                      f'clusters=true&enable_snippets=true&text=Python&page={i}'
                 if url not in self.urls:
                     self.urls.append(url)
         except ConnectionError as exc:
