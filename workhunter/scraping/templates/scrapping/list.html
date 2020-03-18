@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Список вакансий{% endblock %}
+{% block content %}
+<div class="row">
+    {% for job in jobs %}
+        <h4><a href="{{ job.link }}">{{ job.title }}</a></h4>
+        <p>{{ job.context }}</p>
+        <p>{{ job.company }}</p>
+        <hr/><br/>
+    {% endfor %}
+</div>
+{% endblock %}

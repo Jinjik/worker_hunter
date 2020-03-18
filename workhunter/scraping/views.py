@@ -3,6 +3,10 @@ from .utils import Parser
 from .models import Speciality, City, Vacancy, Url, Site
 
 
+def index(request):
+    return render(request, 'base.html')
+
+
 def home(request):
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
@@ -24,4 +28,4 @@ def home(request):
                         description=job['context'], company=job['company'])
             v.save()
 
-    return render(request, 'base.html', {'jobs': jobs})
+    return render(request, 'scrapping/list.html', {'jobs': jobs})
