@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from scraping.views import home, index
+from scraping.views import home, index, vacancy_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', index),
     path('home/', home),
+    path('list/', vacancy_list),
 ]

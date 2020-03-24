@@ -1,10 +1,47 @@
+from django.http import Http404
 from django.shortcuts import render
+
+from .forms import FindVacancyFrom
 from .utils import Parser
 from .models import Speciality, City, Vacancy, Url, Site
+
+import datetime
 
 
 def index(request):
     return render(request, 'base.html')
+
+
+def list_v(request):
+    today = datetime.datetime.today()
+    city = City.objects.get(name='Томск')
+    speciality = Speciality.objects.get(name='Python')
+    qs = Vacancy.objects.filter(city=city.id, speciality=speciality.id, timestamp=today)
+
+    if qs:
+        return render(request, 'scrapping/list.html', {'jobs': qs})
+
+    return render(request, 'scrapping/list.html')
+
+def vacancy_list(request):
+    today = datetime.datetime.today()
+    form = FindVacancyFrom
+
+    if request.GET:
+        try:
+            city_id = int(request.GET.get('city'))
+            speciality_id = int(request.GET.get('speciality'))
+        except ValueError:
+            raise Http404('Page not found')
+        context = {}
+        context['form'] = form
+        qs = Vacancy.objects.filter(city=city_id, speciality=speciality_id, timestamp=today)
+
+        if qs:
+            context['jobs'] = qs
+            return render(request, 'scrapping/list.html', context)
+
+    return render(request, 'scrapping/list.html', {'form': form})
 
 
 def home(request):

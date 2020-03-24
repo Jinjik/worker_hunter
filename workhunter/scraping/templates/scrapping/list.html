@@ -1,12 +1,38 @@
 {% extends 'base.html' %}
 {% block title %}Список вакансий{% endblock %}
+
 {% block content %}
-<div class="row">
-    {% for job in jobs %}
-        <h4><a href="{{ job.link }}">{{ job.title }}</a></h4>
-        <p>{{ job.context }}</p>
-        <p>{{ job.company }}</p>
-        <hr/><br/>
-    {% endfor %}
+
+<div class="row my-5">
+    <div class="col">
+        <h1 class="my-5 text-center">Список вакансий</h1>
+    </div>
 </div>
-{% endblock %}
+
+<div class="row my-5">
+    {% if jobs %}
+        {% for job in jobs %}
+            <div class="col-12 text-left">
+                <h4><a href="{{ job.url }}">{{ job.title }}</a></h4>
+                <p>{{ job.description }}</p>
+                <p>{{ job.company }}</p>
+                <hr/><br/>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center">
+            <h2>По вашему запросу ничего не найдено!</h2>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col">
+        <form method="GET" action="">
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Показать</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
