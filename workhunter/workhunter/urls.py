@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from scraping.views import home, index, vacancy_list
+from subscribers.views import SubscriberCreate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', index),
     path('home/', home),
-    path('list/', vacancy_list),
+    path('list/', vacancy_list, name='list'),
+    path('create/', SubscriberCreate.as_view(), name='create')
 ]
