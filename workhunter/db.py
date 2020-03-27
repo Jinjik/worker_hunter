@@ -29,7 +29,24 @@ else:
     cur = conn.cursor()
     cur.execute(f'SELECT city_id, speciality_id FROM subscribers_subscriber WHERE is_active={True};')
     cities_qs = cur.fetchall()
-    print(cities_qs)
+
+    todo_list = {i[0]: set() for i in cities_qs}
+
+    for i in cities_qs:
+        todo_list[i[0]].add(i[1])
+
+    cur.execute('SELECT * FROM scraping_site;')
+    sites_qs = cur.fetchall()
+    sites = {i[0]: i[1] for i in sites_qs}
+    url_list = list()
+
+    for city in todo_list:
+
+        for sp in todo_list[city]:
+            tmp = {}
+            cur.execute(f'SELECT site_id, url_address FROM scraping_url WHERE city_id={city} AND speciality_id={sp};')
+            qs = cur.fetchall()
+            log.info(qs)
 
     conn.commit()
     cur.close()
