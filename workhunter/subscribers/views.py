@@ -58,6 +58,7 @@ def update_subscriber(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Данные успешно сохранены!')
+            del request.session['email']
             return redirect('list')
 
         messages.error(request, 'Проверьте правильность заполнения формы')

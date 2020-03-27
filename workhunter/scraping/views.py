@@ -23,6 +23,7 @@ def list_v(request):
 
     return render(request, 'scrapping/list.html')
 
+
 def vacancy_list(request):
     today = datetime.datetime.today()
     form = FindVacancyFrom
