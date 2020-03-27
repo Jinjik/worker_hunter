@@ -28,11 +28,13 @@ def vacancy_list(request):
     form = FindVacancyFrom
 
     if request.GET:
+
         try:
             city_id = int(request.GET.get('city'))
             speciality_id = int(request.GET.get('speciality'))
         except ValueError:
             raise Http404('Page not found')
+
         context = {}
         context['form'] = form
         qs = Vacancy.objects.filter(city=city_id, speciality=speciality_id, timestamp=today)
@@ -59,7 +61,9 @@ def home(request):
     jobs = parser.parse()
     vacancy = Vacancy.objects.filter(city=city.id, speciality=speciality.id).values('url')
     url_list = [url['url'] for url in vacancy]
+
     for job in jobs:
+
         if job['link'] not in url_list:
             v = Vacancy(city=city, speciality=speciality, url=job['link'], title=job['title'],
                         description=job['context'], company=job['company'])

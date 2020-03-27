@@ -33,8 +33,8 @@ class LogInForm(forms.Form):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean_password(self, *args, **kwargs):
-        email = self.cleaned_data('email')
-        password = self.cleaned_data('password')
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
 
         if email and password:
             qs = Subscriber.objects.filter(email=email).first()
@@ -46,3 +46,20 @@ class LogInForm(forms.Form):
 
         return email
 
+
+class SubscriberHiddenEmailForm(forms.ModelForm):
+    city = forms.ModelChoiceField(
+        label='Город', queryset=City.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    speciality = forms.ModelChoiceField(
+        label='Специальность', queryset=Speciality.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.HiddenInput())
+    is_active = forms.BooleanField(label='Получать рассылку', required=False, widget=forms.CheckboxInput())
+
+    class Meta:
+        model = Subscriber
+        fields = ('email', 'city', 'speciality', 'password', 'is_active')
