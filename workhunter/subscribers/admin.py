@@ -9,4 +9,5 @@ class SubscriberAdmin(admin.ModelAdmin):
     list_display = ('email', 'city', 'speciality', 'is_active')
     list_editable = ['is_active']
 
-admin.site.register(Subscriber)
+
+admin.site.register(Subscriber, SubscriberAdmin)
