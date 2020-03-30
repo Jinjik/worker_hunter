@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 import psycopg2
 
@@ -8,6 +9,7 @@ from workhunter.secret import (
     DB_PASSWORD,
     DB_USER
 )
+from scraping.utils import Parser
 
 log = logging.getLogger(__name__)
 console = logging.StreamHandler()
@@ -19,6 +21,10 @@ fh = logging.FileHandler('../../logs.log', mode='a')
 log.addHandler(fh)
 fh.setLevel(logging.INFO)
 fh.setFormatter(logging.Formatter(logger_format))
+
+parser = Parser()
+today = datetime.datetime.today()
+ten_days_ago = datetime.date.today() - datetime.timedelta(10)
 
 try:
     conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD)
@@ -46,7 +52,49 @@ else:
             tmp = {}
             cur.execute(f'SELECT site_id, url_address FROM scraping_url WHERE city_id={city} AND speciality_id={sp};')
             qs = cur.fetchall()
-            log.info(qs)
+
+            if qs:
+                tmp['city'] = city
+                tmp['speciality'] = sp
+
+                for item in qs:
+                    site_id = item[0]
+                    tmp[sites[site_id]] = item[1]
+
+                url_list.append(tmp)
+
+    all_data = list()
+
+    if url_list:
+
+        for url in url_list:
+            tmp = {}
+            tmp_content = list()
+            parser.get_urls(url['hh.ru'])
+            tmp_content.extend(parser.parse())
+            tmp['city'] = url['city']
+            tmp['speciality'] = url['speciality']
+            tmp['content'] = tmp_content
+            all_data.append(tmp)
+
+    log.info('get data')
+
+    if all_data:
+
+        for data in all_data:
+            for job in data['content']:
+                cur.execute(f"""SELECT * FROM scraping_vacancy WHERE url='{job["link"]}';""")
+                qs = cur.fetchone()
+
+                if not qs:
+                    cur.execute(
+                        """INSERT INTO scraping_vacancy (city_id, speciality_id, title, url, description, company, 
+                            timestamp ) VALUES (%s, %s, %s, %s, %s, %s, %s);
+                        """, (data['city'], data['speciality'], job['title'], job['link'], job['context'],
+                              job['company'], today)
+                    )
+
+    cur.execute("""DELETE FROM scraping_vacancy WHERE timestamp<=%s;""", (ten_days_ago, ))
 
     conn.commit()
     cur.close()
