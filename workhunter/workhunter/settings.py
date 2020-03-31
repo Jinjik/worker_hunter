@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-from .secret import (
+from workhunter.secret import (
     DB_HOST,
     DB_NAME,
     DB_PASSWORD,
