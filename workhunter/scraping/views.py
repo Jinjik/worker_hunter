@@ -1,27 +1,15 @@
 from django.http import Http404
 from django.shortcuts import render
 
-from .forms import FindVacancyFrom
-from .utils import Parser
-from .models import Speciality, City, Vacancy, Url, Site
-
 import datetime
+
+from .forms import FindVacancyFrom
+from .models import Vacancy, City, Speciality
 
 
 def index(request):
-    return render(request, 'base.html')
-
-
-def list_v(request):
-    today = datetime.datetime.today()
-    city = City.objects.get(name='Томск')
-    speciality = Speciality.objects.get(name='Python')
-    qs = Vacancy.objects.filter(city=city.id, speciality=speciality.id, timestamp=today)
-
-    if qs:
-        return render(request, 'scrapping/list.html', {'jobs': qs})
-
-    return render(request, 'scrapping/list.html')
+    form = FindVacancyFrom
+    return render(request, 'scrapping/home.html', {'form': form})
 
 
 def vacancy_list(request):
@@ -38,33 +26,12 @@ def vacancy_list(request):
 
         context = {}
         context['form'] = form
-        qs = Vacancy.objects.filter(city=city_id, speciality=speciality_id, timestamp=today)
+        qs = Vacancy.objects.filter(city=city_id, speciality=speciality_id)
 
         if qs:
             context['jobs'] = qs
+            context['city'] = qs[0].city.name
+            context['speciality'] = qs[0].speciality.name
             return render(request, 'scrapping/list.html', context)
 
     return render(request, 'scrapping/list.html', {'form': form})
-
-
-def home(request):
-    city = City.objects.get(name='Томск')
-    speciality = Speciality.objects.get(name='Python')
-    url_qs = Url.objects.filter(city=city, speciality=speciality)
-    site = Site.objects.all()
-    url_hh = url_qs.get(site=site.get(name='hh.ru')).url_address
-    parser = Parser()
-    parser.get_urls(url_hh)
-    jobs = list()
-    jobs.extend(parser.parse())
-    vacancy = Vacancy.objects.filter(city=city.id, speciality=speciality.id).values('url')
-    url_list = [url['url'] for url in vacancy]
-
-    for job in jobs:
-
-        if job['link'] not in url_list:
-            v = Vacancy(city=city, speciality=speciality, url=job['link'], title=job['title'],
-                        description=job['context'], company=job['company'])
-            v.save()
-
-    return render(request, 'scrapping/list.html', {'jobs': jobs})
