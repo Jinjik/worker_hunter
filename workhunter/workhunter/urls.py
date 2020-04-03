@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from scraping.views import index, vacancy_list
-from subscribers.views import SubscriberCreate, update_subscriber, login_subscriber
+from subscribers.views import SubscriberCreate, update_subscriber, login_subscriber, contact_admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +25,6 @@ urlpatterns = [
     path('login/', login_subscriber, name='login'),
     path('update/', update_subscriber, name='update'),
     path('create/', SubscriberCreate.as_view(), name='create'),
+    path('contact/', contact_admin, name='contact'),
     path('', index, name='index'),
 ]

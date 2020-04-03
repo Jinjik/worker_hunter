@@ -63,3 +63,9 @@ class SubscriberHiddenEmailForm(forms.ModelForm):
     class Meta:
         model = Subscriber
         fields = ('email', 'city', 'speciality', 'password', 'is_active')
+
+
+class ContactForm(forms.Form):
+    email = forms.EmailField(label='E-mail', required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    city = forms.CharField(label='Город', required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    speciality = forms.CharField(label='Специальность', widget=forms.TextInput(attrs={'class': 'form-control'}))

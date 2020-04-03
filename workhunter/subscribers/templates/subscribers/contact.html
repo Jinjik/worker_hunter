@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Заявка на добавление{% endblock %}
+
+{% block content %}
+
+<div class="row my-5">
+    <div class="col">
+        <h1 class="my-5 text-center">Форма отправки заявки на добвление города или специальности</h1>
+    </div>
+</div>
+
+
+<form method="POST" action="" class="text-center">
+    <div class="container bgcont center-block col-md-8 mx-auto">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-success">Отправить</button>
+</form>
+
+{% endblock content %}
